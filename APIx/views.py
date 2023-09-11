@@ -4,22 +4,22 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 import json
 
-from models import Person
-from  serializers import PersonSerializer
+from APIx.models import Person
+from APIx.serializers import PersonSerializer
 
 from django.core.files.storage import default_storage
 # Create your views here.
 
 
 @csrf_exempt
-def departmentApi(request, id=0):
+def personApi(request, id=0):
     if request.method == 'GET':
         if id == 0:
             person = Person.objects.all()
             person_serializer = PersonSerializer(person, many=True)
             return JsonResponse(person_serializer.data, safe=False)
         else:
-            person = Person.objects.filter(DepartmentId=id)
+            person = Person.objects.filter(Id=id)
             person_serializer = PersonSerializer(person, many=True)
             response = JsonResponse(person_serializer.data, safe=False)
             response_data = json.loads(response.content)
@@ -40,7 +40,7 @@ def departmentApi(request, id=0):
 
     elif request.method == 'PUT':
         person_data = JSONParser().parse(request)
-        person = Person.objects.get(DepartmentId = person_data['DepartmentId'])
+        person = Person.objects.get(Id = person_data['Id'])
         person_serializer = PersonSerializer(person, data=person_data)
         if person_serializer.is_valid():
             person_serializer.save()
@@ -48,6 +48,6 @@ def departmentApi(request, id=0):
         return JsonResponse("Failed to Update")
 
     elif request.method == "DELETE":
-        person = Person.objects.get(DepartmentId=id)
+        person = Person.objects.get(Id=id)
         person.delete()
         return JsonResponse("Deleted Successfully", safe=False)

@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import url, include
+from django.conf.urls import url
+
+from APIx import views
+from APIx.views import personApi
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^', include('APIx.urls'))
+    url(r'^api$',views.personApi),
+    path('api/<int:id>', personApi, name='person_api'),
+    
 ]
